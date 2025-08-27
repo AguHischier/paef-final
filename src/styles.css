@@ -1,0 +1,30 @@
+:root{
+    --primary: #0284c7;
+    --success: #10b981;
+    --danger: #ef4444;
+    --muted: #6b7280;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family: Inter, system-ui, -apple-system, Roboto, "Helvetica Neue", Arial;
+    margin:0; background:#f8fafc; color:#0f172a;
+  }
+  .app{max-width:980px;margin:28px auto;padding:20px}
+  .header{display:flex;gap:12px;align-items:center;justify-content:space-between}
+  .card{background:white;border-radius:12px;padding:16px;box-shadow:0 6px 18px rgba(2,6,23,0.06);margin-top:16px}
+  .btn{background:var(--primary);color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer}
+  .btn-ghost{background:transparent;border:1px solid #e6eef7;padding:10px 12px;border-radius:10px;cursor:pointer}
+  .row{display:flex;gap:12px;align-items:center}
+  .pill{padding:6px 10px;border-radius:999px;font-weight:700}
+  .risk-red{color:var(--danger);background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15)}
+  .risk-yellow{color:#f59e0b;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15)}
+  .risk-green{color:var(--success);background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15)}
+  .small{font-size:13px;color:var(--muted)}
+  .progress-dots{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .dot{width:34px;height:34px;border-radius:999px;border:1px solid #e6eef7;display:flex;align-items:center;justify-content:center;background:white;cursor:pointer}
+  .badge{display:inline-block;padding:6px 10px;border-radius:8px;background:#f1f5f9}
+  .link{color:var(--primary);text-decoration:none}
+  .result-success{border-left:6px solid var(--success);padding-left:12px}
+  .result-fail{border-left:6px solid var(--danger);padding-left:12px}
+  .footer{margin-top:20px;color:var(--muted);font-size:13px}
+  
