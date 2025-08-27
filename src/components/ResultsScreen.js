@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ResultsScreen({ questions, answers, restart, RISK_META }) {
+export default function ResultsScreen({ questions, answers, restart, RISK_META, endedByLives = false }) {
   let score = 0,
     maxScore = 0,
     correct = 0;
@@ -12,12 +12,15 @@ export default function ResultsScreen({ questions, answers, restart, RISK_META }
     }
   }
   const pct = Math.round((score / maxScore) * 100);
-  const approved = pct >= 70;
+  const approved = !endedByLives && pct >= 70;
 
   return (
     <div className="app">
       <div className="card">
         <h1>{approved ? "✔ Aprobado" : "✖ Desaprobado"}</h1>
+        {endedByLives && (
+          <p className="result-fail">Perdiste las 3 vidas. El intento finalizó por vidas.</p>
+        )}
         <p>
           Puntaje: {score}/{maxScore} ({pct}%)
         </p>

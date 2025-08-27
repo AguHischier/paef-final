@@ -11,6 +11,8 @@ const RISK_META = {
   green: { label: "Baja gravedad", points: 1 },
 };
 
+const TOTAL_LIVES = 3;
+
 export default function App() {
   const [mode, setMode] = useState(null); // exam | practice | challenge
   const [dni, setDni] = useState("");
@@ -19,6 +21,7 @@ export default function App() {
   const [answers, setAnswers] = useState({});
   const [finished, setFinished] = useState(false);
   const [showFeedback, setShowFeedback] = useState(null); // { correct, question }
+  const [lives, setLives] = useState(TOTAL_LIVES);
 
   const [secondsLeft, setSecondsLeft] = useState(null);
   const timerRef = useRef(null);
@@ -57,6 +60,7 @@ export default function App() {
     setAnswers({});
     setFinished(false);
     setShowFeedback(null);
+    setLives(TOTAL_LIVES);
 
     if (modeChoice === "exam") {
       const reds = QUESTIONS.filter((q) => q.risk === "red");
@@ -82,7 +86,14 @@ export default function App() {
   function handleTimeout(qid) {
     if (!answers[qid]) {
       setAnswers((prev) => ({ ...prev, [qid]: { optionId: null, correct: false } }));
-      setShowFeedback({ correct: false, question: questions[index] });
+      const nextLives = lives - 1;
+      setLives(nextLives);
+      if (nextLives <= 0) {
+        setShowFeedback(null);
+        setFinished(true);
+      } else {
+        setShowFeedback({ correct: false, question: questions[index] });
+      }
     }
   }
 
@@ -91,7 +102,18 @@ export default function App() {
     const opt = q.options.find((o) => o.id === optId);
     const correct = !!opt?.correct;
     setAnswers((prev) => ({ ...prev, [qid]: { optionId: optId, correct } }));
-    setShowFeedback({ correct, question: q });
+    if (correct) {
+      setShowFeedback({ correct: true, question: q });
+    } else {
+      const nextLives = lives - 1;
+      setLives(nextLives);
+      if (nextLives <= 0) {
+        setShowFeedback(null);
+        setFinished(true);
+      } else {
+        setShowFeedback({ correct: false, question: q });
+      }
+    }
     clearInterval(timerRef.current);
   }
 
@@ -111,6 +133,7 @@ export default function App() {
     setIndex(0);
     setFinished(false);
     setShowFeedback(null);
+    setLives(TOTAL_LIVES);
   }
 
   if (!mode) {
@@ -124,6 +147,7 @@ export default function App() {
         answers={answers}
         restart={restart}
         RISK_META={RISK_META}
+        endedByLives={lives <= 0}
       />
     );
   }
@@ -148,6 +172,8 @@ export default function App() {
       secondsLeft={secondsLeft}
       mode={mode}
       RISK_META={RISK_META}
+      lives={lives}
+      totalLives={TOTAL_LIVES}
     />
   );
 }

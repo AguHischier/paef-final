@@ -9,6 +9,8 @@ export default function QuizScreen({
   secondsLeft,
   mode,
   RISK_META,
+  lives,
+  totalLives,
 }) {
   const ans = answers[question.id];
   const riskColor =
@@ -17,6 +19,12 @@ export default function QuizScreen({
       : question.risk === "yellow"
       ? "#f59e0b"
       : "var(--success)";
+
+  const hearts = Array.from({ length: totalLives }, (_, i) => (
+    <span key={i} style={{ fontSize: 18, lineHeight: 1 }}>
+      {i < lives ? "❤️" : "🖤"}
+    </span>
+  ));
 
   return (
     <div className="app">
@@ -31,9 +39,14 @@ export default function QuizScreen({
             </span>
             <span className="badge">Valor: {RISK_META[question.risk].points} pts</span>
           </div>
-          {secondsLeft !== null && (
-            <div className="badge">⏱ {secondsLeft}s</div>
-          )}
+          <div className="row" style={{ gap: 10 }}>
+            <div className="small" title="Vidas" style={{ display: "flex", gap: 6 }}>
+              {hearts}
+            </div>
+            {secondsLeft !== null && (
+              <div className="badge">⏱ {secondsLeft}s</div>
+            )}
+          </div>
         </div>
 
         <p style={{ marginTop: 8 }}>{question.prompt}</p>
