@@ -4,6 +4,7 @@ import IntroScreen from "./components/IntroScreen";
 import QuizScreen from "./components/QuizScreen";
 import FeedbackScreen from "./components/FeedbackScreen";
 import ResultsScreen from "./components/ResultsScreen";
+import TransitionScreen from "./components/TransitionScreen";
 
 const RISK_META = {
   red: { label: "Alta gravedad", points: 3 },
@@ -22,12 +23,14 @@ export default function App() {
   const [finished, setFinished] = useState(false);
   const [showFeedback, setShowFeedback] = useState(null); // { correct, question }
   const [lives, setLives] = useState(TOTAL_LIVES);
+  const [showTransition, setShowTransition] = useState(false);
+  const [situationStartIndex, setSituationStartIndex] = useState(null);
 
   const [secondsLeft, setSecondsLeft] = useState(null);
   const timerRef = useRef(null);
 
   useEffect(() => {
-    if (!questions.length || finished || showFeedback) return;
+    if (!questions.length || finished || showFeedback || showTransition) return;
 
     const q = questions[index];
     if (!q) return;
@@ -52,7 +55,7 @@ export default function App() {
     }, 1000);
 
     return () => clearInterval(timerRef.current);
-  }, [index, questions, mode, finished, showFeedback]);
+  }, [index, questions, mode, finished, showFeedback, showTransition]);
 
   function start(modeChoice) {
     setMode(modeChoice);
@@ -61,17 +64,22 @@ export default function App() {
     setFinished(false);
     setShowFeedback(null);
     setLives(TOTAL_LIVES);
+    setShowTransition(false);
+    setSituationStartIndex(null);
 
     if (modeChoice === "exam") {
-      const reds = QUESTIONS.filter((q) => q.risk === "red");
-      const yellows = QUESTIONS.filter((q) => q.risk === "yellow");
-      const greens = QUESTIONS.filter((q) => q.risk === "green");
-      const pick = [
-        ...shuffle(reds).slice(0, 3),
-        ...shuffle(yellows).slice(0, 6),
-        ...shuffle(greens).slice(0, 11),
-      ].filter(Boolean);
-      setQuestions(shuffle(pick.length ? pick : QUESTIONS));
+      const knowledge = QUESTIONS.filter((q) => {
+        const n = getQNumber(q.id);
+        return n >= 1 && n <= 38;
+      });
+      const situations = QUESTIONS.filter((q) => getQNumber(q.id) >= 39);
+      const selected = [
+        ...shuffle(knowledge).slice(0, 10),
+        ...shuffle(situations).slice(0, 10),
+      ];
+      setQuestions(selected);
+      const sitStart = selected.findIndex((q) => getQNumber(q.id) >= 39);
+      setSituationStartIndex(sitStart >= 0 ? sitStart : null);
     } else if (modeChoice === "challenge") {
       setQuestions(shuffle(QUESTIONS).slice(0, 5));
     } else {
@@ -81,6 +89,11 @@ export default function App() {
 
   function shuffle(arr) {
     return [...arr].sort(() => Math.random() - 0.5);
+  }
+
+  function getQNumber(id) {
+    const n = parseInt(String(id).replace(/[^0-9]/g, ""), 10);
+    return isNaN(n) ? 0 : n;
   }
 
   function handleTimeout(qid) {
@@ -118,6 +131,18 @@ export default function App() {
   }
 
   function goNext() {
+    // Al pasar del último conocimiento al primer "Situación", mostrar transición
+    if (
+      mode === "exam" &&
+      situationStartIndex !== null &&
+      index + 1 === situationStartIndex
+    ) {
+      setShowTransition(true);
+      setShowFeedback(null);
+      clearInterval(timerRef.current);
+      return;
+    }
+
     if (index + 1 < questions.length) {
       setIndex(index + 1);
       setShowFeedback(null);
@@ -148,6 +173,21 @@ export default function App() {
         restart={restart}
         RISK_META={RISK_META}
         endedByLives={lives <= 0}
+      />
+    );
+  }
+
+  if (showTransition) {
+    return (
+      <TransitionScreen
+        title="Ahora comienza el apartado de Situaciones"
+        subtitle="Preguntas con situaciones reales de manejo."
+        onContinue={() => {
+          setShowTransition(false);
+          if (situationStartIndex !== null) {
+            setIndex(situationStartIndex);
+          }
+        }}
       />
     );
   }

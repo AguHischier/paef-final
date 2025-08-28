@@ -20,6 +20,11 @@ export default function QuizScreen({
       ? "#f59e0b"
       : "var(--success)";
 
+  const isSituation = (() => {
+    const n = parseInt(String(question.id).replace(/[^0-9]/g, ""), 10);
+    return !isNaN(n) && n >= 39;
+  })();
+
   const hearts = Array.from({ length: totalLives }, (_, i) => (
     <span key={i} style={{ fontSize: 18, lineHeight: 1 }}>
       {i < lives ? "❤️" : "🖤"}
@@ -37,6 +42,7 @@ export default function QuizScreen({
             <span className={`pill risk-${question.risk}`}>
               {RISK_META[question.risk].label}
             </span>
+            {isSituation && <span className="badge">Situación</span>}
             <span className="badge">Valor: {RISK_META[question.risk].points} pts</span>
           </div>
           <div className="row" style={{ gap: 10 }}>
