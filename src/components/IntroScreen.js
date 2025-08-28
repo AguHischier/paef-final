@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function IntroScreen({ dni, setDni, start }) {
+export default function IntroScreen({ dni, setDni, start, weakCount = 0 }) {
   return (
     <div className="app">
       <div className="card">
@@ -20,6 +20,14 @@ export default function IntroScreen({ dni, setDni, start }) {
         </button>
         <button className="btn-ghost" onClick={() => start("practiceSituations")}>
           Práctica situaciones (sin tiempo)
+        </button>
+        <button
+          className="btn-ghost"
+          onClick={() => start("reviewWeak")}
+          disabled={weakCount === 0}
+          title={weakCount === 0 ? "No hay errores guardados" : undefined}
+        >
+          Repasar errores ({weakCount})
         </button>
         <button className="btn-ghost" onClick={() => start("challenge")}>
           Desafío rápido

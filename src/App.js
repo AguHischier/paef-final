@@ -25,6 +25,7 @@ export default function App() {
   const [lives, setLives] = useState(TOTAL_LIVES);
   const [showTransition, setShowTransition] = useState(false);
   const [situationStartIndex, setSituationStartIndex] = useState(null);
+  const [weakCount, setWeakCount] = useState(0);
 
   const [secondsLeft, setSecondsLeft] = useState(null);
   const timerRef = useRef(null);
@@ -36,7 +37,7 @@ export default function App() {
     if (!q) return;
     clearInterval(timerRef.current);
 
-    if (mode === "practiceTheory" || mode === "practiceSituations") {
+    if (mode === "practiceTheory" || mode === "practiceSituations" || mode === "reviewWeak") {
       setSecondsLeft(null);
       return;
     }
@@ -56,6 +57,38 @@ export default function App() {
 
     return () => clearInterval(timerRef.current);
   }, [index, questions, mode, finished, showFeedback, showTransition]);
+
+  // Weak bank helpers (localStorage)
+  function loadWeakBank() {
+    try {
+      const raw = localStorage.getItem("weakBank");
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveWeakBank(ids) {
+    const unique = Array.from(new Set(ids));
+    localStorage.setItem("weakBank", JSON.stringify(unique));
+    setWeakCount(unique.length);
+  }
+
+  function addToWeakBank(id) {
+    const ids = loadWeakBank();
+    ids.push(id);
+    saveWeakBank(ids);
+  }
+
+  function removeFromWeakBank(id) {
+    const ids = loadWeakBank().filter((x) => x !== id);
+    saveWeakBank(ids);
+  }
+
+  useEffect(() => {
+    setWeakCount(loadWeakBank().length);
+  }, []);
 
   function start(modeChoice) {
     setMode(modeChoice);
@@ -89,6 +122,21 @@ export default function App() {
     } else if (modeChoice === "practiceSituations") {
       const situations = QUESTIONS.filter((q) => getQNumber(q.id) >= 39);
       setQuestions(shuffle(situations));
+    } else if (modeChoice === "reviewWeak") {
+      const ids = loadWeakBank();
+      if (!ids.length) {
+        alert("No hay errores guardados para repasar.");
+        restart();
+        return;
+      }
+      const map = new Map(QUESTIONS.map((q) => [q.id, q]));
+      const qs = ids.map((id) => map.get(id)).filter(Boolean);
+      if (!qs.length) {
+        alert("No se encontraron preguntas válidas en el banco de errores.");
+        restart();
+        return;
+      }
+      setQuestions(shuffle(qs));
     } else if (modeChoice === "challenge") {
       setQuestions(shuffle(QUESTIONS).slice(0, 5));
     } else {
@@ -108,14 +156,17 @@ export default function App() {
   function handleTimeout(qid) {
     if (!answers[qid]) {
       setAnswers((prev) => ({ ...prev, [qid]: { optionId: null, correct: false } }));
-      const nextLives = lives - 1;
-      setLives(nextLives);
-      if (nextLives <= 0) {
-        setShowFeedback(null);
-        setFinished(true);
-      } else {
-        setShowFeedback({ correct: false, question: questions[index] });
+      addToWeakBank(qid);
+      if (mode !== "reviewWeak") {
+        const nextLives = lives - 1;
+        setLives(nextLives);
+        if (nextLives <= 0) {
+          setShowFeedback(null);
+          setFinished(true);
+          return;
+        }
       }
+      setShowFeedback({ correct: false, question: questions[index] });
     }
   }
 
@@ -125,16 +176,21 @@ export default function App() {
     const correct = !!opt?.correct;
     setAnswers((prev) => ({ ...prev, [qid]: { optionId: optId, correct } }));
     if (correct) {
+      removeFromWeakBank(qid);
       setShowFeedback({ correct: true, question: q });
     } else {
-      const nextLives = lives - 1;
-      setLives(nextLives);
-      if (nextLives <= 0) {
-        setShowFeedback(null);
-        setFinished(true);
-      } else {
-        setShowFeedback({ correct: false, question: q });
+      addToWeakBank(qid);
+      if (mode !== "reviewWeak") {
+        const nextLives = lives - 1;
+        setLives(nextLives);
+        if (nextLives <= 0) {
+          setShowFeedback(null);
+          setFinished(true);
+          clearInterval(timerRef.current);
+          return;
+        }
       }
+      setShowFeedback({ correct: false, question: q });
     }
     clearInterval(timerRef.current);
   }
@@ -171,7 +227,7 @@ export default function App() {
   }
 
   if (!mode) {
-    return <IntroScreen dni={dni} setDni={setDni} start={start} />;
+    return <IntroScreen dni={dni} setDni={setDni} start={start} weakCount={weakCount} />;
   }
 
   if (finished) {
@@ -222,7 +278,7 @@ export default function App() {
       mode={mode}
       RISK_META={RISK_META}
       lives={lives}
-      totalLives={TOTAL_LIVES}
+      totalLives={mode === "reviewWeak" ? 0 : TOTAL_LIVES}
     />
   );
 }
