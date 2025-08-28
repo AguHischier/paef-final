@@ -36,7 +36,7 @@ export default function App() {
     if (!q) return;
     clearInterval(timerRef.current);
 
-    if (mode === "practice") {
+    if (mode === "practiceTheory" || mode === "practiceSituations") {
       setSecondsLeft(null);
       return;
     }
@@ -80,6 +80,15 @@ export default function App() {
       setQuestions(selected);
       const sitStart = selected.findIndex((q) => getQNumber(q.id) >= 39);
       setSituationStartIndex(sitStart >= 0 ? sitStart : null);
+    } else if (modeChoice === "practiceTheory") {
+      const theory = QUESTIONS.filter((q) => {
+        const n = getQNumber(q.id);
+        return n >= 1 && n <= 38;
+      });
+      setQuestions(shuffle(theory));
+    } else if (modeChoice === "practiceSituations") {
+      const situations = QUESTIONS.filter((q) => getQNumber(q.id) >= 39);
+      setQuestions(shuffle(situations));
     } else if (modeChoice === "challenge") {
       setQuestions(shuffle(QUESTIONS).slice(0, 5));
     } else {

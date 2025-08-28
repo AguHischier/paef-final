@@ -15,8 +15,11 @@ export default function IntroScreen({ dni, setDni, start }) {
         <button className="btn" onClick={() => start("exam")}>
           Examen completo
         </button>
-        <button className="btn-ghost" onClick={() => start("practice")}>
-          Práctica
+        <button className="btn-ghost" onClick={() => start("practiceTheory")}>
+          Práctica teórica (sin tiempo)
+        </button>
+        <button className="btn-ghost" onClick={() => start("practiceSituations")}>
+          Práctica situaciones (sin tiempo)
         </button>
         <button className="btn-ghost" onClick={() => start("challenge")}>
           Desafío rápido
