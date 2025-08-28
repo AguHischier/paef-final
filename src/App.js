@@ -26,6 +26,7 @@ export default function App() {
   const [showTransition, setShowTransition] = useState(false);
   const [situationStartIndex, setSituationStartIndex] = useState(null);
   const [weakCount, setWeakCount] = useState(0);
+  const [examDate, setExamDate] = useState("");
 
   const [secondsLeft, setSecondsLeft] = useState(null);
   const timerRef = useRef(null);
@@ -89,6 +90,21 @@ export default function App() {
   useEffect(() => {
     setWeakCount(loadWeakBank().length);
   }, []);
+
+  // Load exam date from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("examDate");
+      if (saved) setExamDate(saved);
+    } catch {}
+  }, []);
+
+  // Persist exam date when changed
+  useEffect(() => {
+    try {
+      if (examDate) localStorage.setItem("examDate", examDate);
+    } catch {}
+  }, [examDate]);
 
   function start(modeChoice) {
     setMode(modeChoice);
@@ -227,7 +243,16 @@ export default function App() {
   }
 
   if (!mode) {
-    return <IntroScreen dni={dni} setDni={setDni} start={start} weakCount={weakCount} />;
+    return (
+      <IntroScreen
+        dni={dni}
+        setDni={setDni}
+        start={start}
+        weakCount={weakCount}
+        examDate={examDate}
+        setExamDate={setExamDate}
+      />
+    );
   }
 
   if (finished) {
