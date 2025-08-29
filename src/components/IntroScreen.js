@@ -75,13 +75,13 @@ export default function IntroScreen({ dni, setDni, start, weakCount = 0, examDat
     <div className="app">
       <div className="card">
         <h1>Examen Teórico Gamificado</h1>
-        <label>Ingresá tu DNI:</label>
+        <label style={{ marginRight: 4 }}>Ingresá tu DNI:</label>
         <input
           value={dni}
           onChange={(e) => setDni(e.target.value)}
           placeholder="Ej: 12345678"
         />
-        <label style={{ marginTop: 8 }}>Fecha del examen:</label>
+        <label style={{ marginTop: 8, marginLeft: 8, marginRight: 4 }}>Fecha del examen:</label>
         <input
           type="date"
           value={examDate}
@@ -108,6 +108,7 @@ export default function IntroScreen({ dni, setDni, start, weakCount = 0, examDat
           </div>
         )}
         <p className="small">Elegí un modo:</p>
+        <div style={{ display: "flex", gap: 8 }}>
         <button className="btn" onClick={() => start("exam")}>
           Examen completo
         </button>
@@ -128,6 +129,7 @@ export default function IntroScreen({ dni, setDni, start, weakCount = 0, examDat
         <button className="btn-ghost" onClick={() => start("challenge")}>
           Desafío rápido
         </button>
+        </div>
       </div>
     </div>
   );
