@@ -1,3 +1,8 @@
+import alcoholImage from "../src/images/Screenshot_2.png";
+import semaforoImage from "../src/images/semaforo.png";
+import childImage from "../src/images/accidentemenor.png";
+import nieblaImage from "../src/images/niebla.png";
+import peatonImage from "../src/images/peaton.png";
 const QUESTIONS = [
     {
       id: "q1",
@@ -10,6 +15,7 @@ const QUESTIONS = [
         { id: "b", text: "0,2 g/l", correct: false },
         { id: "c", text: "0,5 g/l", correct: true },
       ],
+      impactImage: alcoholImage,
       explanation:
         "La normativa provincial establece tolerancia de hasta 0,5 g/l para conductores particulares. El alcohol afecta reflejos y aumenta exponencialmente el riesgo de siniestros.",
       resources: [
@@ -58,7 +64,6 @@ const QUESTIONS = [
             { id: "c", text: "Puente ferroviario.", correct: false },
           ],
           explanation: "La señal indica cruce de varias vías férreas, advirtiendo un alto riesgo en la zona.",
-          impactImage: "/images/impact/train_accident.jpg",
           resources: [{ title: "Ley 24.449 - Señalización ferroviaria", url: "https://www.argentina.gob.ar/normativa/nacional/ley-24449-76338/texto" }],
         },
         {
@@ -71,7 +76,7 @@ const QUESTIONS = [
             { id: "c", text: "Rige la norma legal en el caso particular.", correct: false },
           ],
           explanation: "La autoridad presente prevalece sobre la señalización vial en casos específicos.",
-          impactImage: "/images/impact/red_light_accident.jpg",
+          impactImage: semaforoImage,
           resources: [{ title: "Ley 24.449 - Autoridad de tránsito", url: "https://www.argentina.gob.ar/normativa/nacional/ley-24449-76338/texto" }],
         },
         {
@@ -103,7 +108,7 @@ const QUESTIONS = [
         },
         {
           id: "q8",
-          risk: "red",
+          risk: "yellow",
           prompt: "¿Qué condiciones facilitan la fatiga en el conductor?",
           options: [
             { id: "a", text: "Conducir muy despacio", correct: false },
@@ -124,6 +129,7 @@ const QUESTIONS = [
             { id: "b", text: "No, el presunto infractor debe necesariamente comparecer ante el juez.", correct: true },
             { id: "c", text: "Sí, sólo si el pago voluntario se efectiviza dentro de los 30 días.", correct: false },
           ],
+          impactImage: alcoholImage,
           explanation: "Para casos graves de alcoholemia no aplica pago voluntario con beneficio de descuento; corresponde comparecer ante la autoridad competente.",
           resources: [],
         },
@@ -335,6 +341,7 @@ const QUESTIONS = [
             { id: "b", text: "No.", correct: true },
             { id: "c", text: "En principio no, pero podría en una pick up.", correct: false },
           ],
+          impactImage: childImage,
           explanation: "Los menores deben viajar en asientos traseros con SRI acorde a su talla y peso.",
           resources: [],
         },
@@ -384,6 +391,7 @@ const QUESTIONS = [
               { id: "b", text: "Luces altas o de largo alcance.", correct: false },
               { id: "c", text: "Luces bajas.", correct: true },
             ],
+            impactImage: nieblaImage,
             explanation: "La luz baja evita el rebote lumínico en la niebla y mejora la visibilidad.",
             resources: [],
           },
@@ -408,6 +416,7 @@ const QUESTIONS = [
               { id: "b", text: "Indica que hay que detenerse si se estima que no se alcanzará a trasponer la encrucijada.", correct: false },
               { id: "c", text: "Indica que hay que avanzar aunque mi vehículo quede detenido en el medio obstruyendo la circulación de la calzada que cruza.", correct: false },
             ],
+            impactImage: semaforoImage,
             explanation: "La luz verde habilita el paso siempre que la intersección esté despejada.",
             resources: [],
           },
@@ -420,6 +429,7 @@ const QUESTIONS = [
               { id: "b", text: "Con pena de multa más inhabilitación para conducir.", correct: true },
               { id: "c", text: "Sólo con pena de multa.", correct: false },
             ],
+            impactImage: alcoholImage,
             explanation: "Negarse a la prueba constituye una falta grave sancionada con multa e inhabilitación.",
             resources: [{ title: "Ley 24.449 - Art. 72", url: "https://www.argentina.gob.ar/normativa/nacional/ley-24449-76338/texto" }],
           },
@@ -495,6 +505,7 @@ const QUESTIONS = [
               { id: "b", text: "Reducís la velocidad y le cedés el paso.", correct: true },
               { id: "c", text: "Tocás bocina para que apure el paso.", correct: false },
             ],
+            impactImage: peatonImage,
             explanation: "El peatón siempre tiene prioridad al cruzar con semáforo habilitado. El conductor debe detenerse o reducir la marcha.",
             resources: [],
           },
