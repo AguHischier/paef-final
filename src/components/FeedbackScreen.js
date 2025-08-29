@@ -28,7 +28,7 @@ export default function FeedbackScreen({ data, answer, goNext }) {
                 src={question.impactImage}
                 alt="impacto"
                 style={{
-                  maxWidth: "90%",
+                  maxWidth: "50%",
                   margin: "10px auto",
                   borderRadius: "12px",
                 }}
